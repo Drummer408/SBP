@@ -15,5 +15,7 @@ public interface Board {
     void display();
     Board clone();
     boolean isPuzzleSolved();
+    List<Move> getAllMovesForBoard();
     List<Move> getAllMovesForBrick(Brick brick);
+    void applyMove(Move move);
 }

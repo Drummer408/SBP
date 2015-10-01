@@ -117,17 +117,71 @@ public class SimpleBoard implements Board {
     }
 
     @Override
+    public List<Move> getAllMovesForBoard() {
+        List<Move> allMoves = new ArrayList<>();
+
+        List<Move> brickMoves = new ArrayList<>();
+        for (Brick brick : bricks) {
+            brickMoves = getAllMovesForBrick(brick);
+            allMoves.addAll(brickMoves);
+        }
+
+        return allMoves;
+    }
+
+    @Override
     public List<Move> getAllMovesForBrick(Brick brick) {
         List<Move> moves = new ArrayList<>();
+        Direction direction;
 
-        checkLeftMove(moves, brick);
+        // CHECK LEFT MOVE
+        direction = Direction.LEFT;
+        if (isValidMove(brick, direction)) {
+            moves.add(new Move(brick, direction));
+        }
+
+        // CHECK RIGHT MOVE
+        direction = Direction.RIGHT;
+        if (isValidMove(brick, direction)) {
+            moves.add(new Move(brick, direction));
+        }
+
+        // CHECK UP MOVE
+        direction = Direction.UP;
+        if (isValidMove(brick, direction)) {
+            moves.add(new Move(brick, direction));
+        }
+
+        // CHECK DOWN MOVE
+        direction = Direction.DOWN;
+        if (isValidMove(brick, direction)) {
+            moves.add(new Move(brick, direction));
+        }
 
         return moves;
     }
 
-    private void checkLeftMove(List<Move> moves, Brick brick) {
+    private boolean isValidMove(Brick brick, Direction direction) {
         for (BrickComponent brickComponent : brick.getBrickComponents()) {
-            
+            int cellRep = cells[brickComponent.getX() + direction.getXOffset()][brickComponent.getY() + direction.getYOffset()].getRepresentation();
+            if ((cellRep > Cell.EMPTY_CELL_REPRESENTATION) && (cellRep != brick.getId())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void applyMove(Move move) {
+        if (isValidMove(move.getBrick(), move.getDirection())) {
+            int cellX, cellY;
+            for (BrickComponent brickComponent : move.getBrick().getBrickComponents()) {
+                cellX = brickComponent.getX() + move.getDirection().getXOffset();
+                cellY = brickComponent.getY() + move.getDirection().getYOffset();
+
+                cells[cellX][cellY].setRepresentation(move.getBrick().getId());
+                cells[brickComponent.getX()][brickComponent.getY()].setRepresentation(0);
+            }
         }
     }
 }

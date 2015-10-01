@@ -1,18 +1,12 @@
 package main;
 
 public class Move {
-    private Board board;
     private Brick brick;
     private Direction direction;
 
-    public Move(Board board, Brick brick, Direction direction) {
-        this.board = board;
+    public Move(Brick brick, Direction direction) {
         this.brick = brick;
         this.direction = direction;
-    }
-
-    public Board getBoard() {
-        return board;
     }
 
     public Brick getBrick() {
