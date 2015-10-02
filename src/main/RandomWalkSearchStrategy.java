@@ -10,7 +10,6 @@ public class RandomWalkSearchStrategy implements SearchStrategy {
         randomNumberGenerator = new Random();
     }
 
-
     @Override
     public void search(Board board, int numMoves) {
         board.display();
