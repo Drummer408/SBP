@@ -25,7 +25,7 @@ public class ExternalFileFacadeImpl implements ExternalFileFacade{
         while ((line = reader.readLine()) != null) {
             String[] lineList = line.split(",");
             for (int i = 0; i < width; i++) {
-                board.setCell(new Cell(Integer.parseInt(lineList[i])), i, count);
+                board.setCell(Integer.parseInt(lineList[i]), i, count);
             }
             count++;
         }

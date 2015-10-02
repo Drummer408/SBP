@@ -8,7 +8,7 @@ public interface Board {
     Cell[][] getCells();
     void setCells(Cell[][] cells);
     Cell getCell(int x, int y);
-    void setCell(Cell cell, int x, int y);
+    void setCell(int representation, int x, int y);
     List<Brick> getBricks();
     Brick getBrick(int id);
     void addBrick(Brick brick);
@@ -17,5 +17,9 @@ public interface Board {
     boolean isPuzzleSolved();
     List<Move> getAllMovesForBoard();
     List<Move> getAllMovesForBrick(Brick brick);
+    boolean isValidMove(Brick brick, Direction direction);
     void applyMove(Move move);
+    Board applyMoveCloning(Move move);
+    boolean isSameBoardAs(Board board);
+    void normalize();
 }

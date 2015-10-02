@@ -13,6 +13,16 @@ public class SimpleBoard implements Board {
         this.height = height;
         cells = new Cell[width][height];
         bricks = new ArrayList<>();
+
+        initialize();
+    }
+
+    private void initialize() {
+        for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++) {
+                cells[i][j] = new Cell();
+            }
+        }
     }
 
     @Override
@@ -47,9 +57,9 @@ public class SimpleBoard implements Board {
     }
 
     @Override
-    public void setCell(Cell cell, int x, int y) {
-        cells[x][y] = cell;
-        checkCellForBrickComponents(cell, x, y);
+    public void setCell(int representation, int x, int y) {
+        cells[x][y].setRepresentation(representation);
+        checkCellForBrickComponents(cells[x][y], x, y);
     }
 
     private void checkCellForBrickComponents(Cell cell, int x, int y) {
@@ -62,7 +72,9 @@ public class SimpleBoard implements Board {
                     return;
                 }
             }
-            bricks.add(new Brick(brickId));
+            Brick newBrick = new Brick(brickId);
+            newBrick.addBrickComponent(brickComponent);
+            bricks.add(newBrick);
         }
     }
 
@@ -161,7 +173,8 @@ public class SimpleBoard implements Board {
         return moves;
     }
 
-    private boolean isValidMove(Brick brick, Direction direction) {
+    @Override
+    public boolean isValidMove(Brick brick, Direction direction) {
         for (BrickComponent brickComponent : brick.getBrickComponents()) {
             int cellRep = cells[brickComponent.getX() + direction.getXOffset()][brickComponent.getY() + direction.getYOffset()].getRepresentation();
             if ((cellRep > Cell.EMPTY_CELL_REPRESENTATION) && (cellRep != brick.getId())) {
@@ -174,13 +187,61 @@ public class SimpleBoard implements Board {
     @Override
     public void applyMove(Move move) {
         if (isValidMove(move.getBrick(), move.getDirection())) {
-            int cellX, cellY;
             for (BrickComponent brickComponent : move.getBrick().getBrickComponents()) {
-                cellX = brickComponent.getX() + move.getDirection().getXOffset();
-                cellY = brickComponent.getY() + move.getDirection().getYOffset();
-
-                cells[cellX][cellY].setRepresentation(move.getBrick().getId());
                 cells[brickComponent.getX()][brickComponent.getY()].setRepresentation(0);
+                brickComponent.setX(brickComponent.getX() + move.getDirection().getXOffset());
+                brickComponent.setY(brickComponent.getY() + move.getDirection().getYOffset());
+                cells[brickComponent.getX()][brickComponent.getY()].setRepresentation(move.getBrick().getId());
+            }
+        }
+    }
+
+    @Override
+    public Board applyMoveCloning(Move move) {
+        Board newBoard = this.clone();
+        newBoard.applyMove(move);
+        return newBoard;
+    }
+
+    @Override
+    public boolean isSameBoardAs(Board board) {
+        if (board.getWidth() != this.getWidth() || board.getHeight() != this.getHeight()) {
+            return false;
+        }
+
+        for (int i = 0; i < this.getWidth(); i++) {
+            for (int j = 0; j < this.getHeight(); j++) {
+                if (board.getCell(i, j).getRepresentation() != this.getCell(i, j).getRepresentation()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void normalize() {
+        int nextIdx = 3;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (cells[j][i].getRepresentation() == nextIdx) {
+                    nextIdx++;
+                } else if (cells[j][i].getRepresentation() > nextIdx) {
+                    swapIdx(nextIdx, cells[j][i].getRepresentation());
+                    nextIdx++;
+                }
+            }
+        }
+    }
+
+    private void swapIdx(int idx1, int idx2) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (cells[j][i].getRepresentation() == idx1) {
+                    cells[j][i].setRepresentation(idx2);
+                } else if (cells[j][i].getRepresentation() == idx2) {
+                    cells[j][i].setRepresentation(idx1);
+                }
             }
         }
     }

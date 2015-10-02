@@ -1,10 +1,10 @@
 package main;
 
 public enum Direction {
-    UP("Up", -1, 0),
-    DOWN("Down", 1, 0),
-    LEFT("Left", 0, -1),
-    RIGHT("Right", 0, 1);
+    UP("Up", 0, -1),
+    DOWN("Down", 0, 1),
+    LEFT("Left", -1, 0),
+    RIGHT("Right", 1, 0);
 
     private final String direction;
     private final int xOffset;

@@ -8,6 +8,9 @@ public class Cell {
 
     private int representation;
 
+    public Cell() {
+    }
+
     public Cell(int representation) {
         this.representation = representation;
     }

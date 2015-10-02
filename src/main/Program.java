@@ -7,9 +7,10 @@ public class Program {
         ExternalFileFacade eff = new ExternalFileFacadeImpl();
         try {
             Board board = eff.loadBoardFromFile("SBP-level0.txt");
-            board.display();
-        } catch (IOException | ArrayIndexOutOfBoundsException e) {
-            System.out.println("Error loading file.");
+            SearchStrategy ss = new RandomWalkSearchStrategy();
+            ss.search(board, 3);
+        } catch (ArrayIndexOutOfBoundsException | IOException e) {
+            System.out.println("Error loading input file.");
             System.exit(1);
         }
     }
