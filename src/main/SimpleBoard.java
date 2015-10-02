@@ -177,7 +177,10 @@ public class SimpleBoard implements Board {
     public boolean isValidMove(Brick brick, Direction direction) {
         for (BrickComponent brickComponent : brick.getBrickComponents()) {
             int cellRep = cells[brickComponent.getX() + direction.getXOffset()][brickComponent.getY() + direction.getYOffset()].getRepresentation();
-            if ((cellRep > Cell.EMPTY_CELL_REPRESENTATION) && (cellRep != brick.getId())) {
+            if (cellRep == Cell.GOAL_CELL_REPRESENTATION && !brick.isMasterBrick()) {
+                return false;
+            }
+            if (cellRep > Cell.EMPTY_CELL_REPRESENTATION && cellRep != brick.getId()) {
                 return false;
             }
         }
@@ -189,6 +192,8 @@ public class SimpleBoard implements Board {
         if (isValidMove(move.getBrick(), move.getDirection())) {
             for (BrickComponent brickComponent : move.getBrick().getBrickComponents()) {
                 cells[brickComponent.getX()][brickComponent.getY()].setRepresentation(0);
+            }
+            for (BrickComponent brickComponent : move.getBrick().getBrickComponents()) {
                 brickComponent.setX(brickComponent.getX() + move.getDirection().getXOffset());
                 brickComponent.setY(brickComponent.getY() + move.getDirection().getYOffset());
                 cells[brickComponent.getX()][brickComponent.getY()].setRepresentation(move.getBrick().getId());

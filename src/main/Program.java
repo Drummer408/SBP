@@ -8,7 +8,7 @@ public class Program {
         try {
             Board board = eff.loadBoardFromFile("SBP-level0.txt");
             SearchStrategy ss = new RandomWalkSearchStrategy();
-            ss.search(board, 3);
+            ss.search(board, 100);
         } catch (ArrayIndexOutOfBoundsException | IOException e) {
             System.out.println("Error loading input file.");
             System.exit(1);
